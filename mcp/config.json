@@ -1,0 +1,37 @@
+{
+    "servers": {
+        "example_server": {
+            "name": "Example MCP Server",
+            "url": "localhost",
+            "port": 8888,
+            "description": "Servidor de exemplo para testes MCP",
+            "endpoints": [
+                "/health",
+                "/api/data",
+                "/api/process"
+            ]
+        },
+        "data_server": {
+            "name": "Data Processing Server",
+            "url": "localhost",
+            "port": 8889,
+            "description": "Servidor para processamento de dados",
+            "endpoints": [
+                "/health",
+                "/data/upload",
+                "/data/process",
+                "/data/results"
+            ]
+        }
+    },
+    "connection_settings": {
+        "timeout": 10,
+        "retry_attempts": 3,
+        "retry_delay": 1
+    },
+    "logging": {
+        "enabled": true,
+        "level": "INFO",
+        "file": "logs/mcp.log"
+    }
+}

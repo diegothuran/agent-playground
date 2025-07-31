@@ -1,0 +1,13 @@
+agno
+google-genai
+python-dotenv
+uvicorn
+fastapi
+duckduckgo-search
+yfinance
+requests
+beautifulsoup4
+pandas
+numpy
+matplotlib
+seaborn
