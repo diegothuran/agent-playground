@@ -225,3 +225,107 @@ class DataAnalysisTools:
             error_msg = f"❌ Erro ao criar visualização avançada: {str(e)}"
             print(f"DEBUG: {error_msg}")
             return error_msg
+        
+    def process_pasted_data(self, data_text: str, data_description: str = "dados") -> dict:
+        """Processa dados colados diretamente no chat (CSV, JSON, etc)."""
+        try:
+            # Detectar tipo de dados
+            data_text = data_text.strip()
+            
+            if not data_text:
+                return {"error": "Dados vazios fornecidos"}
+            
+            # Tentar como CSV
+            try:
+                from io import StringIO
+                df = pd.read_csv(StringIO(data_text))
+                
+                return {
+                    "success": True,
+                    "data_type": "CSV",
+                    "shape": df.shape,
+                    "columns": df.columns.tolist(),
+                    "dtypes": df.dtypes.to_dict(),
+                    "missing_values": df.isnull().sum().to_dict(),
+                    "head": df.head().to_dict(),
+                    "description": df.describe().to_dict(),
+                    "message": f"✅ Dados CSV processados: {df.shape[0]} linhas, {df.shape[1]} colunas"
+                }
+            except:
+                pass
+            
+            # Tentar como JSON
+            try:
+                import json
+                json_data = json.loads(data_text)
+                
+                if isinstance(json_data, list) and len(json_data) > 0:
+                    # Lista de objetos - converter para DataFrame
+                    df = pd.json_normalize(json_data)
+                    return {
+                        "success": True,
+                        "data_type": "JSON",
+                        "shape": df.shape,
+                        "columns": df.columns.tolist(),
+                        "head": df.head().to_dict(),
+                        "message": f"✅ Dados JSON processados: {df.shape[0]} registros"
+                    }
+                else:
+                    return {
+                        "success": True,
+                        "data_type": "JSON",
+                        "data": json_data,
+                        "message": "✅ Dados JSON processados"
+                    }
+            except:
+                pass
+            
+            # Tentar como dados tabulares simples (separados por espaço/tab)
+            try:
+                lines = data_text.split('\n')
+                if len(lines) > 1:
+                    # Detectar separador
+                    separators = ['\t', ',', ';', ' ']
+                    for sep in separators:
+                        try:
+                            df = pd.read_csv(StringIO(data_text), sep=sep)
+                            if df.shape[1] > 1:  # Pelo menos 2 colunas
+                                return {
+                                    "success": True,
+                                    "data_type": f"Tabular (sep: '{sep}')",
+                                    "shape": df.shape,
+                                    "columns": df.columns.tolist(),
+                                    "head": df.head().to_dict(),
+                                    "message": f"✅ Dados tabulares processados: {df.shape[0]} linhas, {df.shape[1]} colunas"
+                                }
+                        except:
+                            continue
+            except:
+                pass
+            
+            # Se chegou aqui, tentar como lista de números
+            try:
+                # Extrair números do texto
+                import re
+                numbers = re.findall(r'-?\d+\.?\d*', data_text)
+                if numbers:
+                    numeric_data = [float(x) for x in numbers]
+                    summary = self.statistical_summary(numeric_data)
+                    return {
+                        "success": True,
+                        "data_type": "Numeric List",
+                        "data": numeric_data,
+                        "count": len(numeric_data),
+                        "statistics": summary,
+                        "message": f"✅ {len(numeric_data)} números extraídos e analisados"
+                    }
+            except:
+                pass
+            
+            return {
+                "error": f"Não foi possível processar os dados fornecidos. Formatos suportados: CSV, JSON, dados tabulares ou listas numéricas.",
+                "suggestion": "Tente formatar os dados como CSV (com cabeçalhos) ou forneça uma lista de números separados por vírgula."
+            }
+            
+        except Exception as e:
+            return {"error": f"Erro ao processar dados: {str(e)}"}

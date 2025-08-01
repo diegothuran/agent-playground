@@ -2,7 +2,18 @@
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://typescriptlang.org)
-[![Next.js](https://img.shields.io/badge/Next.js-15+-black.svg)](https://nextjs.org)
+[![Ne### 📚 Exemplos Práticos
+
+```bash
+make examples           # Lista todos os exemplos disponíveis
+make example            # Exemplo básico de uso
+make example-multi      # Múltiplos agentes colaborando  
+make example-tools      # Ferramentas customizadas
+make example-data       # Análise de dados com gráficos
+make example-charts     # Sistema de gráficos automático (NOVO!)
+make example-mcp        # Integração MCP (GitHub)
+make example-data-exploration # Exploração avançada MCP oficial
+```s://img.shields.io/badge/Next.js-15+-black.svg)](https://nextjs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Agno](https://img.shields.io/badge/Powered%20by-Agno-green.svg)](https://github.com/phidatahq/agno)
 
@@ -136,6 +147,20 @@ agno-playground/
 - 🔍 **Exploração Avançada** - Análise automatizada de datasets, scripts Python customizados
 - 🔗 **Integrações** - Conectividade com serviços externos via MCP
 
+### 📊 Sistema de Gráficos Automático (NOVO!)
+
+O playground agora possui **detecção automática de gráficos**! Qualquer ferramenta que gere visualizações será automaticamente exibida no frontend.
+
+**Como usar:**
+```text
+"Crie um gráfico de barras com vendas: Jan=100, Fev=150, Mar=200"
+"Analise o arquivo dados.csv e gere visualizações"
+"Mostre uma matriz de correlação dos dados"
+```
+
+**Tipos suportados:** Line, Bar, Scatter, Histogram, Heatmap, Box Plot  
+**Tecnologia:** Matplotlib → Base64 → Detecção automática no frontend
+
 **💡 Simplesmente faça sua pergunta - o assistente cuidará do resto!**
 
 ### 🎯 Exemplos de Perguntas que Funcionam Automaticamente
@@ -152,20 +177,43 @@ agno-playground/
 O sistema detecta automaticamente o tipo de pergunta e seleciona as ferramentas adequadas:
 
 ```text
-� "Qual o preço atual da PETR4?"
+💰 "Qual o preço atual da PETR4?"
    → Usa automaticamente Yahoo Finance
 
 🌐 "Quais as últimas notícias sobre IA?"
    → Usa automaticamente DuckDuckGo
 
-�💻 "Analise este código Python: def hello(): print('world')"
+💻 "Analise este código Python: def hello(): print('world')"
    → Usa automaticamente ferramentas de código
 
 📊 "Analise o arquivo vendas.csv e gere insights"
    → Usa automaticamente análise de dados + visualização
 
+📈 "Crie um gráfico de barras com os números [10, 20, 30, 40]"
+   → Usa automaticamente ferramentas de gráficos + exibição no frontend
+
 🔍 "Explore o dataset customers.csv focando em churn"
    → Usa automaticamente exploração avançada de dados (MCP)
+
+📊 "Crie um gráfico de barras com as vendas mensais"
+   → Usa automaticamente ferramentas de visualização + exibição automática
+```
+
+### 📊 Sistema de Gráficos Inteligente (NOVO!)
+
+O playground possui **detecção automática de gráficos**! Qualquer análise que gere visualizações será automaticamente exibida no frontend.
+
+```text
+🎯 Como usar:
+"Analise vendas.csv e crie gráficos de tendência"
+"Mostre um histograma da distribuição de idades"  
+"Gere uma matriz de correlação dos dados"
+
+🔧 Tipos suportados:
+📈 Line, 📊 Bar, 🔍 Scatter, 📋 Histogram, 🔥 Heatmap, 📦 Box Plot
+
+⚡ Tecnologia:
+Backend (Matplotlib) → Base64 → Frontend (Detecção automática)
 ```
 
 ## 📚 Documentação e Exemplos
@@ -220,8 +268,8 @@ make frontend           # Frontend Agent UI apenas
 ```bash
 make test               # Testes básicos do sistema
 make test-quick         # Teste rápido dos agentes
-make test-graphics      # Valida geração de gráficos
-make test-mcp-data      # Testa integração MCP oficial
+make test-charts        # Valida sistema de gráficos automático (NOVO!)
+make test-data-exploration # Testa integração MCP oficial de dados
 ```
 
 ## 🎨 Frontend Agent UI

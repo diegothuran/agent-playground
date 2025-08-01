@@ -36,7 +36,7 @@ help:
 	@echo "🧪 TESTES"
 	@echo "test            - Executa testes básicos"
 	@echo "test-quick      - Teste rápido dos agentes"
-	@echo "test-graphics   - Testa geração de gráficos (NOVO!)"
+	@echo "test-charts     - Testa sistema de gráficos automático (NOVO!)"
 	@echo "test-data-exploration - Testa MCP de Exploração de Dados (NOVO!)"
 	@echo ""
 	@echo "🧹 MANUTENÇÃO"
@@ -89,6 +89,7 @@ examples:
 	@echo "example-multi       - Conversas entre múltiplos agentes"
 	@echo "example-tools       - Ferramentas customizadas"
 	@echo "example-data        - Fluxo de análise de dados"
+	@echo "example-charts      - Sistema de gráficos automático (NOVO!)"
 	@echo "example-orchestrator - Demonstração do orquestrador (NOVO!)"
 	@echo ""
 	@echo "💡 Use 'make <exemplo>' para executar"
@@ -113,6 +114,11 @@ example-data:
 	@echo "📊 Executando exemplo de análise de dados..."
 	source .venv/bin/activate && python examples/data_analysis_workflow.py
 
+# Executa exemplo de gráficos automáticos
+example-charts:
+	@echo "📈 Executando exemplo de gráficos automáticos..."
+	source .venv/bin/activate && python examples/chart_example.py
+
 # Executa exemplo do orquestrador
 example-orchestrator:
 	@echo "🧠 Executando exemplo do orquestrador..."
@@ -128,15 +134,15 @@ test-quick:
 	@echo "🧪 Executando teste rápido dos agentes..."
 	source .venv/bin/activate && python tests/test_quick_agents.py
 
+# Teste de geração de gráficos  
+test-charts:
+	@echo "� Testando sistema de gráficos automático..."
+	source .venv/bin/activate && python examples/chart_example.py
+
 # Teste do MCP de Exploração de Dados
 test-data-exploration:
-	@echo "🔍 Testando MCP de Exploração de Dados..."
+	@echo "� Testando MCP de Exploração de Dados..."
 	source .venv/bin/activate && python tests/test_data_exploration_mcp.py
-
-# Teste de geração de gráficos
-test-graphics:
-	@echo "📊 Testando geração de gráficos..."
-	source .venv/bin/activate && python test_graphics.py
 
 # Remove arquivos temporários
 clean:

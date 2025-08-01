@@ -5,6 +5,7 @@ import type { PlaygroundChatMessage } from '@/types/playground'
 import Videos from './Multimedia/Videos'
 import Images from './Multimedia/Images'
 import Audios from './Multimedia/Audios'
+import ChartDisplay from './Charts'
 import { memo } from 'react'
 import AgentThinkingLoader from './AgentThinkingLoader'
 
@@ -30,6 +31,8 @@ const AgentMessage = ({ message }: MessageProps) => {
     messageContent = (
       <div className="flex w-full flex-col gap-4">
         <MarkdownRenderer>{message.content}</MarkdownRenderer>
+        {/* Detectar e exibir gráficos automaticamente */}
+        <ChartDisplay content={message.content} />
         {message.videos && message.videos.length > 0 && (
           <Videos videos={message.videos} />
         )}
