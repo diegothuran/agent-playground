@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Backend sem display para funcionar em servidores
 import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Union, List, Dict, Any
@@ -30,6 +32,10 @@ class DataAnalysisTools:
     def create_visualization(self, data: Union[List, Dict], chart_type: str = "line") -> str:
         """Cria uma visualização dos dados e retorna como base64."""
         try:
+            # Garantir que o backend está configurado
+            plt.switch_backend('Agg')
+            
+            # Criar figura
             plt.figure(figsize=(10, 6))
             
             if isinstance(data, dict):
@@ -39,32 +45,48 @@ class DataAnalysisTools:
                 x = range(len(data))
                 y = data
             else:
-                return "Formato de dados não suportado"
+                plt.close()
+                return "❌ Formato de dados não suportado. Use list ou dict."
             
+            # Verificar se há dados
+            if not y:
+                plt.close()
+                return "❌ Não há dados para visualizar."
+            
+            # Criar gráfico baseado no tipo
             if chart_type == "line":
-                plt.plot(x, y)
+                plt.plot(x, y, marker='o', linewidth=2, markersize=4)
             elif chart_type == "bar":
-                plt.bar(x, y)
+                plt.bar(x, y, alpha=0.7)
             elif chart_type == "scatter":
-                plt.scatter(x, y)
+                plt.scatter(x, y, alpha=0.7, s=50)
             elif chart_type == "histogram":
-                plt.hist(y, bins=20)
+                plt.hist(y, bins=20, alpha=0.7, edgecolor='black')
+            else:
+                plt.plot(x, y)  # Fallback para line
             
-            plt.title(f"Gráfico {chart_type.title()}")
-            plt.xlabel("X")
-            plt.ylabel("Y")
+            # Configurar aparência
+            plt.title(f"Gráfico {chart_type.title()}", fontsize=14, fontweight='bold')
+            plt.xlabel("X", fontsize=12)
+            plt.ylabel("Y", fontsize=12)
             plt.grid(True, alpha=0.3)
+            plt.tight_layout()
             
-            # Salva o gráfico em base64
+            # Salvar como base64
             buffer = io.BytesIO()
-            plt.savefig(buffer, format='png', dpi=150, bbox_inches='tight')
+            plt.savefig(buffer, format='png', dpi=150, bbox_inches='tight', 
+                       facecolor='white', edgecolor='none')
             buffer.seek(0)
             image_base64 = base64.b64encode(buffer.getvalue()).decode()
             plt.close()
             
-            return image_base64
+            return f"data:image/png;base64,{image_base64}"
+            
         except Exception as e:
-            return f"Erro ao criar visualização: {str(e)}"
+            plt.close()  # Garantir que fecha a figura
+            error_msg = f"❌ Erro ao criar visualização: {str(e)}"
+            print(f"DEBUG: {error_msg}")  # Para debug
+            return error_msg
     
     def statistical_summary(self, data: List[float]) -> dict:
         """Calcula resumo estatístico dos dados."""
@@ -108,3 +130,98 @@ class DataAnalysisTools:
                         "correlation": float(corr_value)
                     })
         return strong_corr
+    
+    def create_advanced_visualization(self, df: pd.DataFrame, x_col: str, y_col: str = None, 
+                                    chart_type: str = "line", title: str = None) -> str:
+        """Cria visualizações avançadas com pandas/seaborn."""
+        try:
+            # Garantir backend
+            plt.switch_backend('Agg')
+            
+            # Configurar estilo
+            sns.set_style("whitegrid")
+            plt.figure(figsize=(12, 8))
+            
+            if chart_type == "correlation":
+                # Matriz de correlação (ignora x_col e y_col para este tipo)
+                numeric_cols = df.select_dtypes(include=[np.number]).columns
+                if len(numeric_cols) < 2:
+                    plt.close()
+                    return "❌ Dados insuficientes para matriz de correlação (precisa de 2+ colunas numéricas)"
+                
+                corr_matrix = df[numeric_cols].corr()
+                sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0,
+                           square=True, linewidths=0.5)
+                plt.title(title or "Matriz de Correlação", fontsize=14, fontweight='bold')
+                
+            elif chart_type == "distribution":
+                # Distribuição de uma variável
+                if not x_col or x_col not in df.columns:
+                    plt.close()
+                    return f"❌ Coluna '{x_col}' não encontrada ou não especificada"
+                
+                if df[x_col].dtype in ['object', 'category']:
+                    # Variável categórica
+                    df[x_col].value_counts().plot(kind='bar', alpha=0.7)
+                    plt.xticks(rotation=45)
+                else:
+                    # Variável numérica
+                    sns.histplot(df[x_col], kde=True, alpha=0.7)
+                
+                plt.title(title or f"Distribuição de {x_col}", fontsize=14, fontweight='bold')
+                plt.xlabel(x_col, fontsize=12)
+                plt.ylabel("Frequência", fontsize=12)
+                
+            elif chart_type == "scatter" and y_col:
+                # Gráfico de dispersão
+                if not x_col or not y_col or x_col not in df.columns or y_col not in df.columns:
+                    plt.close()
+                    return f"❌ Colunas não encontradas: {x_col}, {y_col}"
+                
+                sns.scatterplot(data=df, x=x_col, y=y_col, alpha=0.7)
+                plt.title(title or f"{y_col} vs {x_col}", fontsize=14, fontweight='bold')
+                
+            elif chart_type == "line" and y_col:
+                # Gráfico de linha
+                if not x_col or not y_col or x_col not in df.columns or y_col not in df.columns:
+                    plt.close()
+                    return f"❌ Colunas não encontradas: {x_col}, {y_col}"
+                
+                plt.plot(df[x_col], df[y_col], marker='o', linewidth=2, markersize=4)
+                plt.title(title or f"{y_col} ao longo de {x_col}", fontsize=14, fontweight='bold')
+                plt.xlabel(x_col, fontsize=12)
+                plt.ylabel(y_col, fontsize=12)
+                
+            elif chart_type == "box":
+                # Box plot
+                if not x_col or x_col not in df.columns:
+                    plt.close()
+                    return f"❌ Coluna '{x_col}' não encontrada ou não especificada"
+                
+                if y_col and y_col in df.columns:
+                    sns.boxplot(data=df, x=y_col, y=x_col)
+                    plt.title(title or f"Box Plot: {x_col} por {y_col}", fontsize=14, fontweight='bold')
+                else:
+                    sns.boxplot(y=df[x_col])
+                    plt.title(title or f"Box Plot: {x_col}", fontsize=14, fontweight='bold')
+            
+            else:
+                return f"❌ Tipo de gráfico '{chart_type}' não suportado ou parâmetros incorretos"
+            
+            plt.tight_layout()
+            
+            # Salvar como data URL
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', dpi=150, bbox_inches='tight',
+                       facecolor='white', edgecolor='none')
+            buffer.seek(0)
+            image_base64 = base64.b64encode(buffer.getvalue()).decode()
+            plt.close()
+            
+            return f"data:image/png;base64,{image_base64}"
+            
+        except Exception as e:
+            plt.close()
+            error_msg = f"❌ Erro ao criar visualização avançada: {str(e)}"
+            print(f"DEBUG: {error_msg}")
+            return error_msg

@@ -30,10 +30,14 @@ help:
 	@echo "example-tools   - Executa exemplo de ferramentas customizadas"
 	@echo "example-data    - Executa exemplo de análise de dados"
 	@echo "example-orchestrator - Executa exemplo do orquestrador (NOVO!)"
+	@echo "example-mcp     - Executa exemplo de GitHub MCP (NOVO!)"
+	@echo "example-data-exploration - Executa exemplo de Exploração Avançada MCP (NOVO!)"
 	@echo ""
 	@echo "🧪 TESTES"
 	@echo "test            - Executa testes básicos"
 	@echo "test-quick      - Teste rápido dos agentes"
+	@echo "test-graphics   - Testa geração de gráficos (NOVO!)"
+	@echo "test-data-exploration - Testa MCP de Exploração de Dados (NOVO!)"
 	@echo ""
 	@echo "🧹 MANUTENÇÃO"
 	@echo "clean           - Remove arquivos temporários"
@@ -121,8 +125,18 @@ test:
 
 # Teste rápido dos agentes
 test-quick:
-	@echo "🧪 Teste rápido dos agentes..."
+	@echo "🧪 Executando teste rápido dos agentes..."
 	source .venv/bin/activate && python tests/test_quick_agents.py
+
+# Teste do MCP de Exploração de Dados
+test-data-exploration:
+	@echo "🔍 Testando MCP de Exploração de Dados..."
+	source .venv/bin/activate && python tests/test_data_exploration_mcp.py
+
+# Teste de geração de gráficos
+test-graphics:
+	@echo "📊 Testando geração de gráficos..."
+	source .venv/bin/activate && python test_graphics.py
 
 # Remove arquivos temporários
 clean:
@@ -201,3 +215,13 @@ dev-orchestrated:
 	@echo "🔗 Orquestrador: http://localhost:7777"
 	@echo "🧠 Modo: Seleção automática de agentes"
 	cd frontend && pnpm dev
+
+# Exemplo de MCP GitHub
+example-mcp:
+	@echo "🔗 Executando exemplo de GitHub MCP..."
+	source .venv/bin/activate && python examples/github_mcp_example.py
+
+# Exemplo de Exploração de Dados MCP
+example-data-exploration:
+	@echo "🔍 Executando exemplo de Exploração de Dados MCP..."
+	source .venv/bin/activate && python examples/data_exploration_mcp_example.py
