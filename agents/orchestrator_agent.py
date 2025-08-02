@@ -96,7 +96,7 @@ def create_orchestrator_agent() -> Agent:
     # Retornar agente Agno com todas as ferramentas
     return Agent(
         name="Assistente IA",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=all_tools,
         instructions=[
             "Você é um assistente de IA avançado e versátil com acesso a múltiplas ferramentas especializadas.",

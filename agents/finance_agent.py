@@ -8,7 +8,7 @@ def create_finance_agent() -> Agent:
     """Cria um agente especializado em análises financeiras."""
     return Agent(
         name="Finance Agent",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=[YFinanceTools(
             stock_price=True, 
             analyst_recommendations=True, 

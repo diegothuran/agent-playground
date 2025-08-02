@@ -20,7 +20,7 @@ def create_github_agent() -> Agent:
     
     return Agent(
         name="GitHub Agent",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=[
             github_tools.search_repositories,
             github_tools.get_repository_info,

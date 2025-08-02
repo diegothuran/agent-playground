@@ -12,7 +12,7 @@ def create_code_agent() -> Agent:
     
     return Agent(
         name="Code Assistant",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=[
             code_tools.analyze_python_file,
             code_tools.check_code_style,

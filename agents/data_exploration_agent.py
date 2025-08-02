@@ -16,7 +16,7 @@ def create_data_exploration_agent() -> Agent:
     
     return Agent(
         name="Data Explorer Agent",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=[
             data_tools.load_csv,
             data_tools.run_script,
