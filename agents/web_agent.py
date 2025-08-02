@@ -8,7 +8,7 @@ def create_web_agent() -> Agent:
     """Cria um agente especializado em pesquisas web."""
     return Agent(
         name="Web Search Agent",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=[DuckDuckGoTools()],
         instructions=[
             "Você é um especialista em pesquisas na web.",

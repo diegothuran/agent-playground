@@ -18,6 +18,19 @@ from agno.tools.yfinance import YFinanceTools
 from tools.code_tools import CodeAnalysisTools
 from tools.data_tools import DataAnalysisTools
 
+# Importar ferramentas MCP (opcional - só se disponível)
+try:
+    from mcp.github_mcp import GitHubMCPTools
+    GITHUB_MCP_AVAILABLE = True
+except ImportError:
+    GITHUB_MCP_AVAILABLE = False
+
+try:
+    from mcp.data_exploration_mcp import DataExplorationMCPTools
+    DATA_EXPLORATION_MCP_AVAILABLE = True
+except ImportError:
+    DATA_EXPLORATION_MCP_AVAILABLE = False
+
 from config.settings import get_storage_path
 
 logger = logging.getLogger(__name__)
@@ -28,6 +41,17 @@ def create_orchestrator_agent() -> Agent:
     # Inicializar todas as ferramentas
     code_tools = CodeAnalysisTools()
     data_tools = DataAnalysisTools()
+    
+    # Inicializar ferramentas MCP se disponíveis
+    github_tools = None
+    if GITHUB_MCP_AVAILABLE:
+        import os
+        github_token = os.getenv("GITHUB_TOKEN")
+        github_tools = GitHubMCPTools(token=github_token)
+    
+    data_exploration_tools = None
+    if DATA_EXPLORATION_MCP_AVAILABLE:
+        data_exploration_tools = DataExplorationMCPTools()
     
     # Lista de todas as ferramentas disponíveis
     all_tools = [
@@ -50,10 +74,29 @@ def create_orchestrator_agent() -> Agent:
         data_tools.correlation_analysis
     ]
     
+    # Adicionar ferramentas GitHub MCP se disponíveis
+    if github_tools:
+        all_tools.extend([
+            github_tools.search_repositories,
+            github_tools.get_repository_info,
+            github_tools.get_repository_issues,
+            github_tools.get_user_info
+        ])
+    
+    # Adicionar ferramentas de exploração de dados se disponíveis
+    if data_exploration_tools:
+        all_tools.extend([
+            data_exploration_tools.load_csv,
+            data_exploration_tools.run_script,
+            data_exploration_tools.explore_data,
+            data_exploration_tools.get_dataframe_info,
+            data_exploration_tools.clear_dataframes
+        ])
+    
     # Retornar agente Agno com todas as ferramentas
     return Agent(
         name="Assistente IA",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=all_tools,
         instructions=[
             "Você é um assistente de IA avançado e versátil com acesso a múltiplas ferramentas especializadas.",
@@ -74,12 +117,26 @@ def create_orchestrator_agent() -> Agent:
             "- Use as ferramentas de dados para processar CSV e criar visualizações",
             "- Forneça estatísticas descritivas e análises de correlação",
             "",
+            "🔗 INTEGRAÇÃO GITHUB (se disponível):",
+            "- Use ferramentas GitHub para buscar repositórios, informações de projetos",
+            "- Obtenha dados de issues, estatísticas de repositórios, perfis de usuários",
+            "- Forneça links diretos e informações organizadas sobre projetos open source",
+            "",
+            "🔍 EXPLORAÇÃO AVANÇADA DE DADOS (se disponível):",
+            "- Use ferramentas de exploração para análise completa de CSV",
+            "- Execute scripts Python personalizados para análises específicas",
+            "- Gere visualizações automáticas e relatórios detalhados",
+            "- Processe datasets grandes (até 200MB) com eficiência",
+            "- Forneça insights estatísticos e correlações automáticas",
+            "",
             "🎯 SELEÇÃO AUTOMÁTICA:",
             "Para cada pergunta, identifique automaticamente qual tipo de ferramenta usar:",
             "- Perguntas sobre notícias, informações gerais → DuckDuckGo",
             "- Perguntas sobre ações, preços, mercado → Yahoo Finance",
             "- Perguntas sobre código Python → Ferramentas de código",
             "- Perguntas sobre dados, CSV, gráficos → Ferramentas de dados",
+            "- Perguntas sobre repositórios, GitHub → Ferramentas GitHub",
+            "- Perguntas sobre análise de datasets, exploração → Ferramentas de exploração",
             "- Para outras perguntas → Use seu conhecimento base",
             "",
             "Sempre use as ferramentas de forma natural e transparente.",

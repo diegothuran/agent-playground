@@ -12,7 +12,7 @@ def create_mcp_agent() -> Agent:
     
     return Agent(
         name="MCP Agent",
-        model=Gemini(id="gemini-1.5-pro"),
+        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
         tools=[
             mcp_tools.register_mcp_server,
             mcp_tools.list_mcp_servers,
