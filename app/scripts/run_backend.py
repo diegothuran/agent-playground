@@ -13,8 +13,8 @@ import sys
 import os
 from pathlib import Path
 
-# Adicionar o diretório raiz ao path
-sys.path.append(str(Path(__file__).parent))
+# Adicionar o diretório do backend ao path
+sys.path.append(str(Path(__file__).parent.parent / "backend"))
 
 from agno_teams_playground import main
 

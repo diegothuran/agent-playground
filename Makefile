@@ -1,11 +1,10 @@
-# Agno Teams - Makefile Simplificado
-# Apenas 3 formas de execução: backend, frontend, ou sistema completo
+# 🧠 Agno Teams - Sistema de Agentes Especializados
+# Makefile organizado para nova estrutura
 
-.PHONY: help setup backend frontend full clean
+.PHONY: help setup backend frontend streamlit full clean test
 
 # Configuração padrão
 PYTHON := python3
-VENV_DIR := .venv
 
 help: ## Mostra esta mensagem de ajuda
 	@echo "🧠 Agno Teams - Sistema de Agentes Especializados"
@@ -13,32 +12,40 @@ help: ## Mostra esta mensagem de ajuda
 	@echo ""
 	@echo "📋 Comandos disponíveis:"
 	@echo ""
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+	@echo "  make setup     - Configuração inicial"
+	@echo "  make backend   - Backend apenas (porta 7777)"
+	@echo "  make frontend  - Frontend Streamlit (porta 8501)"
+	@echo "  make streamlit - Alias para frontend"
+	@echo "  make full      - Sistema completo"
+	@echo "  make test      - Executar testes"
+	@echo "  make clean     - Limpeza do projeto"
 	@echo ""
-	@echo "🚀 Formas de execução:"
-	@echo "  make backend   - Apenas API backend (porta 7777)"
-	@echo "  make frontend  - Apenas interface web (porta 3000)"
-	@echo "  make full      - Sistema completo (ambas as portas)"
+	@echo "🚀 Ou use diretamente:"
+	@echo "  python main.py --mode [backend|frontend|full]"
 
 setup: ## Configura o ambiente de desenvolvimento
 	@echo "🔧 Configurando ambiente..."
-	$(PYTHON) -m venv $(VENV_DIR)
-	./$(VENV_DIR)/bin/pip install --upgrade pip
-	./$(VENV_DIR)/bin/pip install -r requirements.txt
+	$(PYTHON) -m pip install --upgrade pip
+	$(PYTHON) -m pip install -r requirements.txt
 	@echo "✅ Ambiente configurado!"
-	@echo "💡 Ative o ambiente: source $(VENV_DIR)/bin/activate"
 
 backend: ## Executa apenas o backend (Teams API na porta 7777)
 	@echo "🚀 Iniciando Agno Teams Backend..."
-	$(PYTHON) run_backend.py
+	$(PYTHON) app/backend/agno_teams_playground.py
 
-frontend: ## Executa apenas o frontend (Interface web na porta 3000)
+frontend: ## Executa apenas o frontend Streamlit (porta 8501)
 	@echo "🎨 Iniciando Agno Teams Frontend..."
-	$(PYTHON) run_frontend.py
+	$(PYTHON) app/scripts/run_streamlit_frontend.py
 
-full: ## Executa o sistema completo (backend + frontend)
-	@echo "🚀 Iniciando sistema completo..."
-	$(PYTHON) run_full.py
+streamlit: frontend ## Alias para frontend
+
+full: ## Sistema completo: backend + frontend Streamlit
+	@echo "🚀 Iniciando Sistema Completo..."
+	$(PYTHON) app/scripts/run_full_streamlit.py
+
+test: ## Executa testes do projeto
+	@echo "🧪 Executando testes..."
+	$(PYTHON) -m pytest tests/ -v
 
 clean: ## Remove arquivos temporários e cache
 	@echo "🧹 Limpando arquivos temporários..."
