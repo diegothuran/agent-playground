@@ -5,8 +5,9 @@ Finance Specialist - Agente especializado em análise financeira
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
-from tools.finance_tools_simple import SimpleFinanceTools
-from config.settings import get_storage_path
+from app.tools.finance_tools_simple import SimpleFinanceTools
+from app.config.settings import get_storage_path
+from app.config.gemini_simple import create_ultra_fast_gemini
 
 def create_finance_specialist() -> Agent:
     """Cria um especialista em análise financeira."""
@@ -17,7 +18,7 @@ def create_finance_specialist() -> Agent:
     return Agent(
         name="Finance Specialist",
         role="Expert financial analyst and market researcher",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[
             finance_tools.get_stock_price,
             finance_tools.get_financial_data

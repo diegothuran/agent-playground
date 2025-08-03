@@ -21,6 +21,7 @@ from agno.agent import Agent
 from agno.team import Team
 from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
+from app.config.gemini_simple import create_ultra_fast_gemini
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
 # Importar agentes especializados
@@ -69,7 +70,7 @@ class AgnoTeamsManager:
         if not api_key:
             raise ValueError("GOOGLE_API_KEY não encontrada nas variáveis de ambiente. Configure no arquivo .env")
         
-        self.default_model = Gemini(id="gemini-2.0-flash-thinking-exp-01-21", api_key=api_key)
+        self.default_model = create_ultra_fast_gemini()
         
     def _get_common_team_config(self, name: str, mode: str, description: str) -> Dict[str, Any]:
         """Retorna configuração comum para todos os teams."""

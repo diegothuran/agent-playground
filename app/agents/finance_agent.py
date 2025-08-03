@@ -1,5 +1,6 @@
 from agno.agent import Agent
 from agno.models.google import Gemini
+from app.config.gemini_simple import create_ultra_fast_gemini
 from agno.storage.sqlite import SqliteStorage
 from agno.tools.yfinance import YFinanceTools
 from config.settings import get_storage_path
@@ -8,7 +9,7 @@ def create_finance_agent() -> Agent:
     """Cria um agente especializado em análises financeiras."""
     return Agent(
         name="Finance Agent",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[YFinanceTools(
             stock_price=True, 
             analyst_recommendations=True, 

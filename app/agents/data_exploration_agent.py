@@ -3,6 +3,7 @@ Agente especializado para Exploração de Dados via MCP
 """
 from agno.agent import Agent
 from agno.models.google import Gemini
+from app.config.gemini_simple import create_ultra_fast_gemini
 from agno.storage.sqlite import SqliteStorage
 from config.settings import get_storage_path
 from mcp.data_exploration_mcp import DataExplorationMCPTools
@@ -16,7 +17,7 @@ def create_data_exploration_agent() -> Agent:
     
     return Agent(
         name="Data Explorer Agent",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[
             data_tools.load_csv,
             data_tools.run_script,

@@ -14,7 +14,9 @@ import os
 from pathlib import Path
 
 # Adicionar o diretório do backend ao path
-sys.path.append(str(Path(__file__).parent.parent / "backend"))
+project_root = Path(__file__).parent.parent.parent
+backend_dir = project_root / "app" / "backend"
+sys.path.append(str(backend_dir))
 
 from agno_teams_playground import main
 

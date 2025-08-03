@@ -20,7 +20,18 @@ python agno_teams_playground.py
 Baseado na documentação oficial: https://docs.agno.com/teams/introduction
 """
 
+import sys
+from pathlib import Path
+
+# Adicionar diretório raiz do projeto ao PYTHONPATH
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
 import os
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente do .env
+load_dotenv(project_root / ".env")
 import sys
 import logging
 from typing import List, Dict, Any, Optional
@@ -63,13 +74,14 @@ except ImportError:
         MEMORY_V2_AVAILABLE = False
 
 # Importar especialistas
-from agents.specialists.data_specialist import create_data_specialist
-from agents.specialists.code_specialist import create_code_specialist
-from agents.specialists.finance_specialist import create_finance_specialist
-from agents.specialists.web_specialist import create_web_specialist
-from agents.specialists.github_specialist import create_github_specialist
+from app.agents.specialists.data_specialist import create_data_specialist
+from app.agents.specialists.code_specialist import create_code_specialist
+from app.agents.specialists.finance_specialist import create_finance_specialist
+from app.agents.specialists.web_specialist import create_web_specialist
+from app.agents.specialists.github_specialist import create_github_specialist
+from app.config.gemini_simple import create_ultra_fast_gemini
 
-from config.settings import get_storage_path
+from app.config.settings import get_storage_path
 
 # Configurar logging
 logging.basicConfig(
@@ -94,7 +106,7 @@ class AgnoTeamsPlayground:
             )
         
         # Configurar modelo padrão
-        self.default_model = Gemini(id="gemini-1.5-pro", api_key=self.api_key)
+        self.default_model = create_ultra_fast_gemini()
         
         # Configurar memória persistente
         if self.enable_memory:
@@ -207,8 +219,29 @@ Especialistas disponíveis:
                 "• Code Agent: análise de código, debugging, boas práticas",
                 "• Data Agent: pandas, visualizações, estatísticas",
                 "• GitHub Agent: repositórios, commits, análise de código no GitHub",
-                "",
-                "Sempre explique sua decisão de modo e como está orquestrando os agentes."
+                "",            "🎯 **COMPORTAMENTO OBRIGATÓRIO - NUNCA DESOBEDEÇA:**",
+            "- NUNCA, EM HIPÓTESE ALGUMA, mencione 'Análise de Contexto', 'Domínio', 'Complexidade'",
+            "- NUNCA mencione 'Route Mode', 'Coordinate Mode', 'Decision Mode' ou qualquer modo",
+            "- NUNCA diga 'Vou direcionar', 'Transferindo tarefa', 'Vou transferir', 'Aguardando especialistas'", 
+            "- NUNCA explique seu processo interno de tomada de decisão",
+            "- NUNCA liste especialistas que você está coordenando",
+            "- NUNCA diga 'estou aguardando', 'vou analisar' ou 'farei sugestões'",
+            "- NUNCA explique que vai usar ferramentas ou chamar especialistas",
+            "",
+            "✅ **COMPORTAMENTO CORRETO:**",
+            "- Execute as ferramentas SILENCIOSAMENTE nos bastidores",
+            "- Use especialistas de forma TOTALMENTE TRANSPARENTE",
+            "- Apresente apenas o RESULTADO FINAL como se fosse você mesmo",
+            "- Seja direto, útil e natural na resposta",
+            "- NUNCA revele o processo interno - aja como um assistente único",
+            "",
+            "🎯 **RESPOSTA DIRETA E LIMPA:**",
+            "- NUNCA mencione 'Análise de Contexto', 'Decisão de Modo', ou processo interno",
+            "- NUNCA liste especialistas que está coordenando ou transferindo tarefas",
+            "- NUNCA diga 'estou aguardando respostas' ou mostre etapas de orquestração", 
+            "- Vá direto ao ponto e forneça apenas a resposta final processada",
+            "- Use as ferramentas de forma totalmente transparente ao usuário",
+            "- O usuário deve ver apenas o resultado final, nunca o processo interno"
             ]
         }
         

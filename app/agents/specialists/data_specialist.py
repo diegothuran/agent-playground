@@ -5,8 +5,9 @@ Data Specialist - Agente especializado em análise de dados
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
-from tools.data_tools_simple import DataAnalysisTools
-from config.settings import get_storage_path
+from app.tools.data_tools_simple import DataAnalysisTools
+from app.config.settings import get_storage_path
+from app.config.gemini_simple import create_ultra_fast_gemini
 
 def create_data_specialist() -> Agent:
     """Cria um especialista em análise de dados."""
@@ -17,7 +18,7 @@ def create_data_specialist() -> Agent:
     return Agent(
         name="Data Specialist",
         role="Expert data analyst specializing in statistical analysis and visualization",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[
             data_tools.load_csv,
             data_tools.create_visualization,

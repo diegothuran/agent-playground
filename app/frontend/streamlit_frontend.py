@@ -98,34 +98,50 @@ def send_message_to_team(message: str, team_id: str, file_content: Optional[str]
         }
         
         # Enviar para o team específico usando endpoint correto
-        response = requests.post(
-            f"{BACKEND_URL}/v1/playground/teams/{team_id}/runs",
-            files=files,
-            timeout=120
-        )
-        
-        if response.status_code == 200:
-            result = response.json()
-            # Verificar se é um evento completo ou lista de eventos
-            if isinstance(result, dict):
-                # Evento único - extrair conteúdo
-                content = result.get("content", str(result))
-                return {"response": content}
-            elif isinstance(result, list):
-                # Lista de eventos - concatenar conteúdos
-                full_content = ""
-                for event in result:
-                    if event.get("content"):
-                        full_content += event["content"]
-                return {"response": full_content}
+        try:
+            response = requests.post(
+                f"{BACKEND_URL}/v1/playground/teams/{team_id}/runs",
+                files=files,
+                timeout=180  # Aumentado para 3 minutos
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                # Verificar se é um evento completo ou lista de eventos
+                if isinstance(result, dict):
+                    # Evento único - extrair conteúdo
+                    content = result.get("content", str(result))
+                    return {"response": content}
+                elif isinstance(result, list):
+                    # Lista de eventos - concatenar conteúdos
+                    full_content = ""
+                    for event in result:
+                        if event.get("content"):
+                            full_content += event["content"]
+                    return {"response": full_content}
+                else:
+                    return {"response": str(result)}
             else:
-                return {"response": str(result)}
-        else:
-            return {"error": f"Erro {response.status_code}: {response.text}"}
+                return {"error": f"Erro do servidor: {response.status_code} - {response.text}"}
+                
+        except requests.exceptions.Timeout:
+            return {
+                "error": "⏱️ **Timeout** - A resposta está demorando mais que o esperado. "
+                        "Isso pode acontecer com análises complexas. "
+                        "Tente novamente com uma pergunta mais específica ou aguarde um momento."
+            }
+        except requests.exceptions.ConnectionError:
+            return {
+                "error": "🔌 **Conexão perdida** - Verifique se o backend está rodando na porta 7777."
+            }
+        except Exception as e:
+            return {
+                "error": f"❌ **Erro inesperado**: {str(e)}"
+            }
             
     except Exception as e:
-        logger.error(f"Erro ao enviar mensagem: {e}")
-        return {"error": f"Erro de conexão: {str(e)}"}
+        logger.error(f"Erro ao processar mensagem: {e}")
+        return {"error": f"Erro de processamento: {str(e)}"}
 
 def render_sidebar():
     """Renderiza sidebar com informações e upload"""

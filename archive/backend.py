@@ -89,7 +89,7 @@ class AgnoTeamsPlayground:
             )
         
         # Configurar modelo padrão - Gemini 2.0 Flash
-        self.default_model = Gemini(id="gemini-2.0-flash-thinking-exp-01-21", api_key=self.api_key)
+        self.default_model = Gemini(id="gemini-2.0-flash-lite", api_key=self.api_key)
         
         # Configurar memória persistente
         if self.enable_memory:

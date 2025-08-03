@@ -10,28 +10,29 @@ from datetime import datetime
 # Importar framework Agno
 from agno.agent import Agent
 from agno.models.google import Gemini
+from app.config.gemini_simple import create_ultra_fast_gemini
 from agno.storage.sqlite import SqliteStorage
 
 # Importar todas as ferramentas especializadas
 from agno.tools.duckduckgo import DuckDuckGoTools
 from agno.tools.yfinance import YFinanceTools
-from tools.code_tools import CodeAnalysisTools
-from tools.data_tools import DataAnalysisTools
+from app.tools.code_tools import CodeAnalysisTools
+from app.tools.data_tools_simple import DataAnalysisTools
 
 # Importar ferramentas MCP (opcional - só se disponível)
 try:
-    from mcp.github_mcp import GitHubMCPTools
+    from app.mcp.github_mcp import GitHubMCPTools
     GITHUB_MCP_AVAILABLE = True
 except ImportError:
     GITHUB_MCP_AVAILABLE = False
 
 try:
-    from mcp.data_exploration_mcp import DataExplorationMCPTools
+    from app.mcp.data_exploration_mcp import DataExplorationMCPTools
     DATA_EXPLORATION_MCP_AVAILABLE = True
 except ImportError:
     DATA_EXPLORATION_MCP_AVAILABLE = False
 
-from config.settings import get_storage_path
+from app.config.settings import get_storage_path
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,7 @@ def create_orchestrator_agent() -> Agent:
     # Retornar agente Agno com todas as ferramentas
     return Agent(
         name="Assistente IA",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=all_tools,
         instructions=[
             "Você é um assistente de IA avançado e versátil com acesso a múltiplas ferramentas especializadas.",
@@ -129,6 +130,21 @@ def create_orchestrator_agent() -> Agent:
             "- Processe datasets grandes (até 200MB) com eficiência",
             "- Forneça insights estatísticos e correlações automáticas",
             "",
+            "🎯 COMPORTAMENTO OBRIGATÓRIO - NUNCA DESOBEDEÇA:",
+            "- NUNCA, EM HIPÓTESE ALGUMA, mencione 'Análise de Contexto', 'Domínio', 'Complexidade'",
+            "- NUNCA mencione 'Route Mode', 'Coordinate Mode', 'Decision Mode' ou qualquer modo",
+            "- NUNCA diga 'Vou direcionar', 'Transferindo tarefa', 'Aguardando especialistas'",
+            "- NUNCA explique seu processo interno de tomada de decisão",
+            "- NUNCA liste especialistas que você está coordenando",
+            "- NUNCA diga 'estou aguardando' ou peça mais informações desnecessariamente",
+            "",
+            "✅ COMPORTAMENTO CORRETO:",
+            "- Execute as ferramentas SILENCIOSAMENTE nos bastidores",
+            "- Apresente apenas o RESULTADO FINAL da análise",
+            "- Seja direto, útil e natural na resposta",
+            "- Use as ferramentas de forma transparente para o usuário",
+            "- Se não tiver dados suficientes, peça especificamente o que precisa",
+            "",
             "🎯 SELEÇÃO AUTOMÁTICA:",
             "Para cada pergunta, identifique automaticamente qual tipo de ferramenta usar:",
             "- Perguntas sobre notícias, informações gerais → DuckDuckGo",
@@ -137,18 +153,31 @@ def create_orchestrator_agent() -> Agent:
             "- Perguntas sobre dados, CSV, gráficos → Ferramentas de dados",
             "- Perguntas sobre repositórios, GitHub → Ferramentas GitHub",
             "- Perguntas sobre análise de datasets, exploração → Ferramentas de exploração",
-            "- Para outras perguntas → Use seu conhecimento base",
+            "",        "⚠️ IMPORTANTE - PROCESSAMENTO COMPLETO OBRIGATÓRIO:",
+        "- SEMPRE analise COMPLETAMENTE o conteúdo fornecido pelo usuário",
+        "- Se o usuário fornecer código, analise-o IMEDIATAMENTE usando as ferramentas",
+        "- Se o usuário fornecer dados, processe-os IMEDIATAMENTE",
+        "- NUNCA peça informações que o usuário já forneceu",
+        "- NUNCA responda 'forneça o código' se o código já está presente",
+        "- Execute TODAS as ferramentas necessárias ANTES de responder",
+        "- Só responda após ter TODOS os resultados em mãos",
+        "",
+        "🚨 REGRA ABSOLUTA:",
+        "- Se há código na mensagem → ANALISE-O",
+        "- Se há dados na mensagem → PROCESSE-OS", 
+        "- Se há pergunta na mensagem → RESPONDA-A",
+        "- NUNCA diga 'aguardando' ou 'forneça' - SEMPRE PROCESSE E RESPONDA",
             "",
-            "Sempre use as ferramentas de forma natural e transparente.",
-            "Não mencione qual ferramenta específica você está usando.",
-            "Forneça respostas precisas, úteis e bem fundamentadas."
+            "O usuário deve ver apenas o resultado final, nunca o processo interno."
         ],
         storage=SqliteStorage(
             table_name="orchestrator_agent", 
             db_file=get_storage_path("agents.db")
         ),
-        add_datetime_to_instructions=True,
+        add_datetime_to_instructions=False,  # Remover para reduzir overhead
         add_history_to_messages=True,
-        num_history_responses=5,
+        num_history_responses=2,  # Reduzido ainda mais
         markdown=True,
+        show_tool_calls=False,  # Ocultar chamadas de ferramentas
+        debug_mode=False,  # Desabilitar debug
     )

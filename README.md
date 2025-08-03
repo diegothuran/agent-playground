@@ -2,6 +2,17 @@
 
 Sistema moderno de agentes especializados usando o framework Agno, com arquitetura de Teams inteligente que analisa contexto e orquestra especialistas automaticamente.
 
+## ⚡ Otimizações de Performance
+
+Este projeto foi otimizado para **máxima velocidade de resposta**:
+
+- **🚀 Modelo Ultra-Rápido**: `gemini-2.0-flash-lite` para latência mínima
+- **🎯 Configuração Otimizada**: Temperature 0.1, tokens limitados, top_p/top_k ajustados
+- **🔧 Aplicação Consistente**: Todos os 19+ agentes e specialists usam a mesma configuração otimizada
+- **📊 AFC Habilitado**: Anthropic Function Calling ativo por padrão para melhor performance
+
+> 📖 **Documentação completa**: Ver `docs/AFC_CONCLUSAO_FINAL.md` para detalhes técnicos das otimizações
+
 ## 📁 Estrutura do Projeto
 
 ```

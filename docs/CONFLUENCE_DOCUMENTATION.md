@@ -100,7 +100,7 @@ self.memory = Memory(db=self.memory_db)
 config = {
     "name": "🧠 Agno Teams Leader",
     "members": specialists,  # Lista de especialistas
-    "model": Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+    "model": Gemini(id="gemini-2.0-flash-lite"),
     "description": "Team Leader inteligente...",
     "show_members_responses": True,
     "markdown": True,

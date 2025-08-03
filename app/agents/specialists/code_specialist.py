@@ -5,8 +5,9 @@ Code Specialist - Agente especializado em análise e desenvolvimento de código
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
-from tools.code_tools import CodeAnalysisTools
-from config.settings import get_storage_path
+from app.tools.code_tools import CodeAnalysisTools
+from app.config.settings import get_storage_path
+from app.config.gemini_simple import create_ultra_fast_gemini
 
 def create_code_specialist() -> Agent:
     """Cria um especialista em código e desenvolvimento."""
@@ -17,7 +18,7 @@ def create_code_specialist() -> Agent:
     return Agent(
         name="Code Specialist", 
         role="Expert software developer and code analyst",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[
             code_tools.analyze_python_file,
             code_tools.check_code_style,

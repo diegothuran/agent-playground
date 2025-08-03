@@ -3,6 +3,7 @@ Agente especializado para GitHub MCP
 """
 from agno.agent import Agent
 from agno.models.google import Gemini
+from app.config.gemini_simple import create_ultra_fast_gemini
 from agno.storage.sqlite import SqliteStorage
 from config.settings import get_storage_path
 from mcp.github_mcp import GitHubMCPTools
@@ -20,7 +21,7 @@ def create_github_agent() -> Agent:
     
     return Agent(
         name="GitHub Agent",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[
             github_tools.search_repositories,
             github_tools.get_repository_info,

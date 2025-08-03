@@ -5,7 +5,8 @@ GitHub Specialist - Agente especializado em repositórios GitHub
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
-from config.settings import get_storage_path
+from app.config.settings import get_storage_path
+from app.config.gemini_simple import create_ultra_fast_gemini
 
 # Importar ferramentas MCP do GitHub se disponível
 try:
@@ -45,7 +46,7 @@ def create_github_specialist() -> Agent:
     return Agent(
         name="GitHub Specialist",
         role="Expert GitHub and repository analyst",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=tools,
         instructions=[
             "Você é um especialista em GitHub e gestão de repositórios com expertise em:",

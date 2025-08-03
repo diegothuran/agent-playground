@@ -30,9 +30,13 @@ class AgnoTeamsStreamlitRunner:
         """Inicia o backend em processo separado."""
         print("🚀 Iniciando backend...")
         try:
+            # Obter caminho da raiz do projeto (2 níveis acima)
+            project_root = Path(__file__).parent.parent.parent
+            backend_script = project_root / "app" / "backend" / "agno_teams_playground.py"
+            
             self.backend_process = subprocess.Popen(
-                [sys.executable, "app/scripts/run_backend.py"],
-                cwd=Path(__file__).parent,
+                [sys.executable, str(backend_script)],
+                cwd=str(project_root),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
@@ -95,16 +99,20 @@ class AgnoTeamsStreamlitRunner:
         """Inicia o frontend Streamlit."""
         print("🌐 Iniciando frontend Streamlit...")
         try:
+            # Obter caminho da raiz do projeto e do frontend
+            project_root = Path(__file__).parent.parent.parent
+            frontend_script = project_root / "app" / "frontend" / "streamlit_frontend.py"
+            
             self.frontend_process = subprocess.Popen(
                 [
                     sys.executable, "-m", "streamlit", "run", 
-                    "app/frontend/streamlit_frontend.py",
+                    str(frontend_script),
                     "--server.port", "8501",
                     "--server.address", "localhost",
                     "--browser.gatherUsageStats", "false",
                     "--server.headless", "true"
                 ],
-                cwd=Path(__file__).parent,
+                cwd=str(project_root),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )

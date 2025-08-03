@@ -30,9 +30,13 @@ def main():
     
     # Executar streamlit
     try:
+        # Obter caminho da raiz do projeto
+        project_root = Path(__file__).parent.parent.parent
+        frontend_script = project_root / "app" / "frontend" / "streamlit_frontend.py"
+        
         streamlit_cmd = [
             sys.executable, "-m", "streamlit", "run", 
-            "app/frontend/streamlit_frontend.py",
+            str(frontend_script),
             "--server.port", "8501",
             "--server.address", "localhost",
             "--browser.gatherUsageStats", "false",
@@ -40,6 +44,8 @@ def main():
         ]
         
         print("🚀 Iniciando Streamlit...")
+        # Mudar para o diretório raiz do projeto
+        os.chdir(str(project_root))
         subprocess.run(streamlit_cmd, check=True)
         
     except KeyboardInterrupt:

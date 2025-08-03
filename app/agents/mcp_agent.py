@@ -1,5 +1,6 @@
 from agno.agent import Agent
 from agno.models.google import Gemini
+from app.config.gemini_simple import create_ultra_fast_gemini
 from agno.storage.sqlite import SqliteStorage
 from config.settings import get_storage_path
 from mcp.mcp_tools import MCPTools
@@ -12,7 +13,7 @@ def create_mcp_agent() -> Agent:
     
     return Agent(
         name="MCP Agent",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[
             mcp_tools.register_mcp_server,
             mcp_tools.list_mcp_servers,

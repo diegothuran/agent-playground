@@ -6,7 +6,8 @@ from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.storage.sqlite import SqliteStorage
 from agno.tools.duckduckgo import DuckDuckGoTools
-from config.settings import get_storage_path
+from app.config.settings import get_storage_path
+from app.config.gemini_simple import create_ultra_fast_gemini
 
 def create_web_specialist() -> Agent:
     """Cria um especialista em pesquisa web."""
@@ -14,7 +15,7 @@ def create_web_specialist() -> Agent:
     return Agent(
         name="Web Specialist",
         role="Expert web researcher and information gatherer",
-        model=Gemini(id="gemini-2.0-flash-thinking-exp-01-21"),
+        model=create_ultra_fast_gemini(),
         tools=[DuckDuckGoTools()],
         instructions=[
             "Você é um especialista em pesquisa web e coleta de informações com expertise em:",
