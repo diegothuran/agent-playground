@@ -5,7 +5,7 @@ import { usePlaygroundStore } from '../store'
 
 import { ComboboxAgent, type PlaygroundChatMessage } from '@/types/playground'
 import {
-  getPlaygroundAgentsAPI,
+  getPlaygroundAgentsOrTeamsAPI,
   getPlaygroundStatusAPI
 } from '@/api/playground'
 import { useQueryState } from 'nuqs'
@@ -23,6 +23,7 @@ const useChatActions = () => {
   )
   const setAgents = usePlaygroundStore((state) => state.setAgents)
   const setSelectedModel = usePlaygroundStore((state) => state.setSelectedModel)
+  const setPlaygroundType = usePlaygroundStore((state) => state.setPlaygroundType)
   const [agentId, setAgentId] = useQueryState('agent')
 
   const getStatus = useCallback(async () => {
@@ -34,15 +35,17 @@ const useChatActions = () => {
     }
   }, [selectedEndpoint])
 
-  const getAgents = useCallback(async () => {
+  const getAgentsOrTeams = useCallback(async () => {
     try {
-      const agents = await getPlaygroundAgentsAPI(selectedEndpoint)
-      return agents
+      const result = await getPlaygroundAgentsOrTeamsAPI(selectedEndpoint)
+      // Salva o tipo detectado no store para uso futuro
+      setPlaygroundType(result.type)
+      return result.agents
     } catch {
-      toast.error('Error fetching agents')
+      toast.error('Error fetching agents or teams')
       return []
     }
-  }, [selectedEndpoint])
+  }, [selectedEndpoint, setPlaygroundType])
 
   const clearChat = useCallback(() => {
     setMessages([])
@@ -71,12 +74,16 @@ const useChatActions = () => {
       let agents: ComboboxAgent[] = []
       if (status === 200) {
         setIsEndpointActive(true)
-        agents = await getAgents()
-        // Sempre seleciona automaticamente o primeiro (e único) agente
+        agents = await getAgentsOrTeams()
+        // Sempre seleciona automaticamente o primeiro agente/team
         if (agents.length > 0) {
           const firstAgent = agents[0]
           setAgentId(firstAgent.value)
           setSelectedModel(firstAgent.model.provider || '')
+          
+          // Log para debug
+          const playgroundType = usePlaygroundStore.getState().playgroundType
+          console.log(`🎯 Detectado: ${playgroundType} - Selecionado: ${firstAgent.label}`)
         }
       } else {
         setIsEndpointActive(false)
@@ -90,7 +97,7 @@ const useChatActions = () => {
     }
   }, [
     getStatus,
-    getAgents,
+    getAgentsOrTeams,
     setIsEndpointActive,
     setIsEndpointLoading,
     setAgents,
@@ -102,7 +109,7 @@ const useChatActions = () => {
   return {
     clearChat,
     addMessage,
-    getAgents,
+    getAgentsOrTeams,
     focusChatInput,
     initializePlayground
   }

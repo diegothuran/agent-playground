@@ -16,7 +16,7 @@ from pathlib import Path
 # Adicionar o diretório raiz ao path
 sys.path.append(str(Path(__file__).parent))
 
-from backend import main
+from agno_teams_playground import main
 
 if __name__ == "__main__":
     print("🚀 Iniciando Agno Teams Backend...")

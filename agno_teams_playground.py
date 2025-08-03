@@ -4,7 +4,12 @@ Agno Teams Playground - Sistema moderno de agentes especializados
 
 Este playground implementa a arquitetura avançada de Teams do Agno com:
 - Route Mode: Team principal que direciona para especialistas
-- Coordinate Mode: Teams que coordenam múltiplos agentes  
+- Coo            # O Playground aceita teams
+            self.playground = Playground(
+                teams=[main_team],  # Usar teams em vez de agents
+                name="Agno Teams Playground",
+                description="Sistema inteligente de agentes especializados com Team Leader"
+            )e Mode: Teams que coordenam múltiplos agentes  
 - Collaborate Mode: Teams colaborativos
 - Interface web via Agno Playground
 - Memória persistente e histórico de sessões
@@ -88,8 +93,8 @@ class AgnoTeamsPlayground:
                 "Configure no arquivo .env: GOOGLE_API_KEY=sua_api_key_aqui"
             )
         
-        # Configurar modelo padrão - Gemini 2.0 Flash
-        self.default_model = Gemini(id="gemini-2.0-flash-thinking-exp-01-21", api_key=self.api_key)
+        # Configurar modelo padrão
+        self.default_model = Gemini(id="gemini-1.5-pro", api_key=self.api_key)
         
         # Configurar memória persistente
         if self.enable_memory:
@@ -158,14 +163,14 @@ class AgnoTeamsPlayground:
             "name": "🧠 Agno Teams Leader",
             "members": specialists,  # Usar 'members' em vez de 'agents'
             "model": self.default_model,
-            "description": """Team Leader inteligente powered by Gemini 2.0 Flash que analisa o contexto da pergunta e decide:
+            "description": """Team Leader inteligente que analisa o contexto da pergunta e decide:
             
 🔍 **Análise de Contexto**: Compreende a natureza e complexidade da solicitação
 📍 **Route Mode**: Para tarefas simples, direciona para o especialista mais adequado
 🔄 **Coordinate Mode**: Para tarefas complexas, orquestra múltiplos agentes em pipeline
 🤝 **Collaborate Mode**: Para análises abrangentes, todos os especialistas trabalham juntos
             
-Especialistas disponíveis (todos powered by Gemini 2.0 Flash):
+Especialistas disponíveis:
 💰 Finance Agent - Análise financeira e mercados
 🌐 Web Research Agent - Pesquisa web e informações online  
 💻 Code Analysis Agent - Análise e desenvolvimento de código
@@ -231,9 +236,9 @@ Especialistas disponíveis (todos powered by Gemini 2.0 Flash):
             # Criar o Team Leader principal que gerencia tudo
             main_team = self.create_main_team_leader(specialists)
             
-            # O frontend espera agents, então vamos expor o team como agent
+            # O Playground aceita teams, não storage
             self.playground = Playground(
-                agents=[main_team],  # Expor team como agent para compatibilidade com frontend
+                teams=[main_team],  # Usar teams em vez de agents
                 name="Agno Teams Playground",
                 description="Sistema inteligente de agentes especializados com Team Leader"
             )

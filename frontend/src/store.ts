@@ -59,6 +59,8 @@ interface PlaygroundStore {
   ) => void
   isSessionsLoading: boolean
   setIsSessionsLoading: (isSessionsLoading: boolean) => void
+  playgroundType: 'agents' | 'teams'
+  setPlaygroundType: (playgroundType: 'agents' | 'teams') => void
 }
 
 export const usePlaygroundStore = create<PlaygroundStore>()(
@@ -105,7 +107,9 @@ export const usePlaygroundStore = create<PlaygroundStore>()(
         })),
       isSessionsLoading: false,
       setIsSessionsLoading: (isSessionsLoading) =>
-        set(() => ({ isSessionsLoading }))
+        set(() => ({ isSessionsLoading })),
+      playgroundType: 'agents',
+      setPlaygroundType: (playgroundType) => set(() => ({ playgroundType }))
     }),
     {
       name: 'endpoint-storage',

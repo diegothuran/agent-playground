@@ -15,6 +15,8 @@ import sys
 import os
 import time
 import signal
+import urllib.request
+import urllib.error
 from pathlib import Path
 from threading import Thread
 
@@ -28,55 +30,103 @@ class AgnoTeamsRunner:
         """Inicia o backend em processo separado."""
         print("🚀 Iniciando backend...")
         try:
+            # Iniciar com output capturado para debug
             self.backend_process = subprocess.Popen(
                 [sys.executable, "run_backend.py"],
                 cwd=Path(__file__).parent,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.STDOUT,  # Redirecionar stderr para stdout
+                universal_newlines=True,
+                bufsize=1
             )
             print("✅ Backend iniciado (PID: {})".format(self.backend_process.pid))
+            
+            # Aguardar um pouco e verificar se o processo ainda está rodando
+            time.sleep(2)
+            if self.backend_process.poll() is not None:
+                print("❌ Backend falhou ao iniciar. Verificando saída...")
+                # Ler toda a saída disponível
+                output, _ = self.backend_process.communicate()
+                if output:
+                    print("Saída do backend:")
+                    print(output)
+                return False
+            return True
         except Exception as e:
             print(f"❌ Erro ao iniciar backend: {e}")
+            return False
             
-    def start_frontend(self):
-        """Inicia o frontend após o backend estar pronto."""
-        print("⏱️  Aguardando backend ficar pronto...")
-        
-        # Aguardar backend ficar disponível
+    def wait_for_backend(self):
+        """Aguarda o backend estar pronto."""
         max_attempts = 30
-        for attempt in range(max_attempts):
-            try:
-                import requests
-                response = requests.get("http://localhost:7777/v1/playground/status", timeout=2)
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("playground") == "available":
-                        break
-            except:
-                pass
-            time.sleep(2)
-            print(f"🔄 Tentativa {attempt + 1}/{max_attempts}...")
-        else:
-            print("❌ Backend não ficou disponível a tempo")
-            return
-            
-        print("✅ Backend pronto!")
-        print("🎨 Iniciando frontend...")
+        attempt = 0
         
+        while attempt < max_attempts:
+            try:
+                # Verificar se o processo ainda está rodando
+                if self.backend_process.poll() is not None:
+                    print(f"❌ Backend morreu (exit code: {self.backend_process.returncode})")
+                    # Tentar ler saída do processo morto
+                    try:
+                        output, _ = self.backend_process.communicate(timeout=1)
+                        if output:
+                            print("Última saída do backend:")
+                            print(output)
+                    except:
+                        pass
+                    return False
+                
+                # Verificar se o endpoint está respondendo
+                req = urllib.request.Request("http://localhost:7777/v1/playground/status")
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    if response.status == 200:
+                        print("✅ Backend está pronto!")
+                        return True
+                        
+            except urllib.error.URLError as e:
+                attempt += 1
+                print(f"⏳ Aguardando backend... (tentativa {attempt}/{max_attempts})")
+                if hasattr(e, 'reason'):
+                    print(f"   Razão: {e.reason}")
+                time.sleep(2)
+            except Exception as e:
+                print(f"❌ Erro ao verificar backend: {e}")
+                attempt += 1
+                time.sleep(2)
+        
+        print("❌ Timeout aguardando backend ficar pronto")
+        return False
+    
+    def start_frontend(self):
+        """Inicia o frontend em processo separado."""
+        print("🌐 Iniciando frontend...")
         try:
             frontend_dir = Path(__file__).parent / "frontend"
+            
             if not frontend_dir.exists():
-                print(f"❌ Diretório frontend não encontrado: {frontend_dir}")
+                print("❌ Diretório frontend não encontrado")
+                self.running = False
                 return
-                
-            # Instalar dependências se necessário
-            subprocess.run(
-                ["pnpm", "install"], 
-                cwd=frontend_dir, 
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
+            
+            # Verificar se node_modules existe
+            if not (frontend_dir / "node_modules").exists():
+                print("📦 Instalando dependências do frontend...")
+                install_process = subprocess.run(
+                    ["pnpm", "install"],
+                    cwd=frontend_dir,
+                    capture_output=True,
+                    text=True
+                )
+                if install_process.returncode != 0:
+                    print(f"❌ Erro ao instalar dependências: {install_process.stderr}")
+                    self.running = False
+                    return
+            
+            # Aguardar backend estar pronto
+            if not self.wait_for_backend():
+                print("❌ Backend não ficou pronto")
+                self.running = False
+                return
             
             # Iniciar frontend
             self.frontend_process = subprocess.Popen(
@@ -87,13 +137,9 @@ class AgnoTeamsRunner:
             )
             print("✅ Frontend iniciado (PID: {})".format(self.frontend_process.pid))
             
-        except subprocess.CalledProcessError as e:
-            print(f"❌ Erro ao executar comando: {e}")
-        except FileNotFoundError:
-            print("❌ pnpm não encontrado")
-            print("💡 Instale o pnpm: npm install -g pnpm")
         except Exception as e:
             print(f"❌ Erro ao iniciar frontend: {e}")
+            self.running = False
     
     def stop_all(self):
         """Para todos os processos."""

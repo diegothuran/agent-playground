@@ -25,6 +25,7 @@ const useAIChatStreamHandler = () => {
   const [agentId] = useQueryState('agent')
   const [sessionId, setSessionId] = useQueryState('session')
   const selectedEndpoint = usePlaygroundStore((state) => state.selectedEndpoint)
+  const playgroundType = usePlaygroundStore((state) => state.playgroundType)
   const setStreamingErrorMessage = usePlaygroundStore(
     (state) => state.setStreamingErrorMessage
   )
@@ -149,10 +150,22 @@ const useAIChatStreamHandler = () => {
         const endpointUrl = constructEndpointUrl(selectedEndpoint)
 
         if (!agentId) return
-        const playgroundRunUrl = APIRoutes.AgentRun(endpointUrl).replace(
-          '{agent_id}',
-          agentId
-        )
+        
+        // Usar o endpoint correto baseado no tipo detectado
+        let playgroundRunUrl: string
+        if (playgroundType === 'teams') {
+          playgroundRunUrl = APIRoutes.TeamRun(endpointUrl).replace(
+            '{team_id}',
+            agentId
+          )
+          console.log(`🎯 Usando Teams endpoint: ${playgroundRunUrl}`)
+        } else {
+          playgroundRunUrl = APIRoutes.AgentRun(endpointUrl).replace(
+            '{agent_id}',
+            agentId
+          )
+          console.log(`🎯 Usando Agents endpoint: ${playgroundRunUrl}`)
+        }
 
         formData.append('stream', 'true')
         formData.append('session_id', sessionId ?? '')
@@ -375,6 +388,7 @@ const useAIChatStreamHandler = () => {
       addMessage,
       updateMessagesWithErrorState,
       selectedEndpoint,
+      playgroundType,
       streamResponse,
       agentId,
       setStreamingErrorMessage,
