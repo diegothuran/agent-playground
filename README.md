@@ -2,265 +2,248 @@
 
 Sistema moderno de agentes especializados usando o framework Agno, com arquitetura de Teams inteligente que analisa contexto e orquestra especialistas automaticamente.
 
-## 🎯 **3 FORMAS DE EXECUÇÃO**
+## ⚡ Otimizações de Performance
 
-### 1. 🔗 **Backend Apenas** (API REST)
+Este projeto foi otimizado para **máxima velocidade de resposta**:
+
+- **🚀 Modelo Ultra-Rápido**: `gemini-2.0-flash-lite` para latência mínima
+- **🎯 Configuração Otimizada**: Temperature 0.1, tokens limitados, top_p/top_k ajustados
+- **🔧 Aplicação Consistente**: Todos os 19+ agentes e specialists usam a mesma configuração otimizada
+- **📊 AFC Habilitado**: Anthropic Function Calling ativo por padrão para melhor performance
+
+> 📖 **Documentação completa**: Ver `docs/AFC_CONCLUSAO_FINAL.md` para detalhes técnicos das otimizações
+
+## 📁 Estrutura do Projeto
+
+```
+📦 agno-teams/
+├── 📄 main.py                    # Ponto de entrada principal
+├── 📄 Makefile                   # Comandos de automação
+├── 📄 requirements.txt           # Dependências Python
+├── 📄 README.md                  # Esta documentação
+├── 📄 LICENSE                    # Licença do projeto
+│
+├── 📁 app/                       # Código principal da aplicação
+│   ├── 📁 backend/              # Backend API REST
+│   │   └── agno_teams_playground.py
+│   ├── 📁 frontend/             # Frontend Streamlit
+│   │   └── streamlit_frontend.py
+│   ├── 📁 scripts/              # Scripts de execução
+│   │   ├── run_backend.py
+│   │   ├── run_frontend.py
+│   │   ├── run_streamlit_frontend.py
+│   │   └── run_full_streamlit.py
+│   ├── 📁 agents/               # Agentes especializados
+│   │   ├── orchestrator_agent.py
+│   │   ├── data_agent.py
+│   │   ├── finance_agent.py
+│   │   ├── github_agent.py
+│   │   └── ...
+│   ├── 📁 config/               # Configurações
+│   │   └── settings.py
+│   ├── 📁 mcp/                  # Model Context Protocol
+│   │   ├── data_exploration_mcp.py
+│   │   └── github_mcp.py
+│   ├── 📁 tools/                # Ferramentas auxiliares
+│   ├── 📁 examples/             # Exemplos de uso
+│   └── 📁 __pycache__/
+│
+├── 📁 data/                     # Dados e arquivos
+│   ├── 📁 samples/              # Arquivos de exemplo
+│   │   ├── vendas_exemplo.csv
+│   │   ├── acoes_exemplo.csv
+│   │   └── test_upload.csv
+│   └── 📁 storage/              # Banco de dados
+│       └── agents.db
+│
+├── 📁 tests/                    # Testes automatizados
+│   ├── test_multi_format.py
+│   ├── test_csv_upload.py
+│   └── ...
+│
+├── 📁 docs/                     # Documentação
+│   ├── MULTI_FORMAT_UPLOAD.md
+│   └── README_NEW.md
+│
+└── 📁 archive/                  # Arquivos antigos/backup
+    ├── frontend/                # Frontend Next.js antigo
+    └── ...
+```
+
+## 🚀 Início Rápido
+
+### 1. Configuração do Ambiente
+
 ```bash
-python run_backend.py
-# ou
-make backend
-```
-**Porta**: 7777 | **Uso**: Integração, desenvolvimento backend
+# Clone o repositório
+git clone <repository-url>
+cd agno-teams
 
-### 2. 🎨 **Frontend Apenas** (Interface Web)
-```bash
-python run_frontend.py  
-# ou
-make frontend
-```
-**Porta**: 3000 | **Pré-requisito**: Backend rodando
-
-### 3. 🚀 **Sistema Completo** (Produção)
-```bash
-python run_full.py
-# ou  
-make full
-```
-**Gerencia**: Backend + Frontend simultaneamente
-
----
-
-## 🏗️ **ARQUITETURA INTELIGENTE**
-
-```
-🧠 Team Leader (Análise de Contexto)
-├── 💰 Finance Agent (Mercados & Análise Econômica)
-├── 🌐 Web Research Agent (Pesquisas & Informações Atuais)  
-├── 💻 Code Analysis Agent (Desenvolvimento & Debugging)
-├── 📊 Data Analysis Agent (Estatísticas & Visualizações)
-└── 🐙 GitHub Agent (Repositórios & Gestão de Código)
-```
-
-### **Fluxo Inteligente**
-1. **🔍 Análise Semântica**: Team Leader analisa contexto da pergunta
-2. **📊 Decisão de Modo**: Route (simples), Coordinate (complexo), Collaborate (abrangente)
-3. **🎯 Orquestração**: Direciona ou coordena especialistas apropriados
-4. **🧠 Síntese**: Compila resultado contextualizado e acionável
-
----
-
-## 🛠️ **CONFIGURAÇÃO INICIAL**
-
-### 1. **Instalar Dependências**
-```bash
+# Configure o ambiente
 make setup
-# ou manualmente:
+```
+
+### 2. Execução
+
+**Sistema Completo (Recomendado):**
+```bash
+make full
+# ou
+python main.py --mode full
+```
+
+**Apenas Backend:**
+```bash
+make backend
+# ou  
+python main.py --mode backend
+```
+
+**Apenas Frontend:**
+```bash
+make frontend
+# ou
+python main.py --mode frontend
+```
+
+### 3. Acesso
+
+- **Frontend Streamlit:** http://localhost:8501
+- **Backend API:** http://localhost:7777
+- **Documentação API:** http://localhost:7777/docs
+
+## 🌟 Funcionalidades
+
+### 📊 Upload Multi-Formato
+- **CSV:** Análise de dados tabulares
+- **PDF:** Extração e análise de documentos
+- **Excel (XLS/XLSX):** Planilhas e relatórios
+- **Preview em tempo real** antes do envio
+
+### 🤖 Agentes Especializados
+- **Data Agent:** Análise de dados e visualizações
+- **Finance Agent:** Métricas financeiras e investimentos
+- **GitHub Agent:** Análise de repositórios e código
+- **Web Agent:** Pesquisa e análise web
+- **Orchestrator:** Coordenação inteligente entre agentes
+
+### 🔗 Integração MCP
+- **Data Exploration:** Análise avançada de dados
+- **GitHub Integration:** Conecta com repositórios
+- **Extensibilidade:** Fácil adição de novos MCPs
+
+## 📝 Como Usar
+
+### 1. Upload de Arquivos
+1. Acesse http://localhost:8501
+2. Arraste arquivos para a área de upload
+3. Visualize o preview automático
+4. Faça perguntas sobre seus dados
+
+### 2. Análise de Dados
+```
+Exemplo de perguntas:
+- "Analise as vendas por região"
+- "Quais são os principais insights financeiros?"
+- "Crie gráficos das tendências"
+- "Compare performance dos produtos"
+```
+
+### 3. API REST
+```bash
+# Status do sistema
+curl http://localhost:7777/v1/playground/status
+
+# Listar teams
+curl http://localhost:7777/v1/playground/teams
+
+# Executar análise
+curl -X POST http://localhost:7777/v1/playground/teams/1/runs \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Analise os dados", "context": "..."}'
+```
+
+## 🧪 Testes
+
+```bash
+# Executar todos os testes
+make test
+
+# Testes específicos
+python -m pytest tests/test_multi_format.py -v
+python -m pytest tests/test_csv_upload.py -v
+```
+
+## 🛠️ Desenvolvimento
+
+### Estrutura de Comandos
+```bash
+make help      # Mostrar ajuda
+make setup     # Configurar ambiente
+make backend   # Apenas backend
+make frontend  # Apenas frontend  
+make full      # Sistema completo
+make test      # Executar testes
+make clean     # Limpeza
+```
+
+### Adicionando Novos Agentes
+1. Crie arquivo em `app/agents/`
+2. Implemente interface base do agente
+3. Registre no orchestrador
+4. Adicione testes em `tests/`
+
+### Adicionando Novos MCPs
+1. Crie arquivo em `app/mcp/`
+2. Implemente protocolo MCP
+3. Configure em `app/config/`
+4. Teste integração
+
+## 📚 Documentação
+
+- **Upload Multi-Formato:** `docs/MULTI_FORMAT_UPLOAD.md`
+- **Guia de Desenvolvimento:** `docs/README_NEW.md`
+- **API Reference:** http://localhost:7777/docs (quando rodando)
+
+## 🔧 Troubleshooting
+
+### Problemas Comuns
+
+**Backend não inicia:**
+```bash
+# Verificar dependências
 pip install -r requirements.txt
+
+# Verificar porta
+lsof -i :7777
 ```
 
-### 2. **Configurar API Keys**
-```bash
-cp .env.example .env
-# Edite .env e configure:
-GOOGLE_API_KEY=sua_google_api_key_aqui
-```
-
-### 3. **Iniciar Sistema**
-```bash
-make full  # Sistema completo
-```
-
----
-
-## 🌐 **API REST ENDPOINTS**
-
-### **Base URL**: `http://localhost:7777`
-
-| Endpoint | Método | Descrição |
-|----------|--------|-----------|
-| `/v1/playground/status` | GET | Status do sistema |
-| `/v1/playground/teams` | GET | Lista teams disponíveis |
-| `/v1/playground/teams/{id}/runs` | POST | Executar pergunta |
-| `/docs` | GET | Documentação Swagger |
-
-### **Exemplo de Uso**
-```bash
-curl -X POST http://localhost:7777/v1/playground/teams/{team_id}/runs \
-  -H "Content-Type: multipart/form-data" \
-  -F "message=Analyze PETR4 stock performance"
-```
-
----
-
-## 👥 **ESPECIALISTAS DISPONÍVEIS**
-
-### 💰 **Finance Agent**
-- **Função**: Análise financeira e dados de mercado
-- **Ferramentas**: yfinance, análise de ações, indicadores econômicos
-- **Casos de Uso**: Preços de ações, análise econômica, tendências de mercado
-
-### 🌐 **Web Research Agent**  
-- **Função**: Pesquisas web e informações atuais
-- **Ferramentas**: DuckDuckGo, scraping web, análise de conteúdo
-- **Casos de Uso**: Notícias, tendências, informações em tempo real
-
-### 💻 **Code Analysis Agent**
-- **Função**: Análise e desenvolvimento de código
-- **Ferramentas**: Análise estática, debugging, boas práticas
-- **Casos de Uso**: Review de código, debugging, arquitetura de software
-
-### 📊 **Data Analysis Agent**
-- **Função**: Análise estatística e visualizações
-- **Ferramentas**: pandas, matplotlib, estatísticas descritivas
-- **Casos de Uso**: Análise de CSV, gráficos, correlações, insights
-
-### 🐙 **GitHub Agent**
-- **Função**: Integração com repositórios GitHub
-- **Ferramentas**: GitHub API, análise de código, workflows
-- **Casos de Uso**: Análise de repos, commits, pull requests, CI/CD
-
----
-
-## 🔄 **MODOS DE OPERAÇÃO**
-
-### 📍 **Route Mode**
-- **Quando**: Tarefas simples e diretas
-- **Comportamento**: Direciona para o especialista mais adequado
-- **Exemplo**: "Qual o preço da PETR4?" → Finance Agent
-
-### 🔄 **Coordinate Mode**  
-- **Quando**: Tarefas complexas que requerem múltiplas perspectivas
-- **Comportamento**: Orquestra vários especialistas em sequência
-- **Exemplo**: "Análise completa do setor petrolífero" → Finance + Web + Data
-
-### 🤝 **Collaborate Mode**
-- **Quando**: Análises abrangentes e colaborativas
-- **Comportamento**: Todos os especialistas trabalham simultaneamente
-- **Exemplo**: "Estratégia completa de investimento" → Todos especialistas
-
----
-
-## 📋 **COMANDOS DISPONÍVEIS**
-
-```bash
-make help      # Mostra todos os comandos
-make setup     # Configura ambiente de desenvolvimento
-make backend   # Executa apenas backend (porta 7777)
-make frontend  # Executa apenas frontend (porta 3000) 
-make full      # Executa sistema completo
-make clean     # Remove arquivos temporários
-```
-
----
-
-## 🔧 **DESENVOLVIMENTO**
-
-### **Estrutura do Projeto**
-```
-agno-teams/
-├── run_backend.py          # Script backend
-├── run_frontend.py         # Script frontend  
-├── run_full.py            # Script completo
-├── agents/                # Especialistas
-│   ├── teams_manager.py   # Gerenciador de teams
-│   └── specialists/       # Agentes especializados
-├── tools/                 # Ferramentas dos agentes
-├── config/               # Configurações
-├── frontend/             # Interface Next.js + agno-ui
-└── docs/                 # Documentação técnica
-```
-
-### **Adicionando Novos Especialistas**
-1. Criar arquivo em `agents/specialists/`
-2. Implementar função `create_*_specialist()`
-3. Adicionar ao `teams_manager.py`
-4. Registrar ferramentas necessárias
-
----
-
-## 🚀 **DEPLOY & PRODUÇÃO**
-
-### **Docker** (Recomendado)
-```bash
-docker build -t agno-teams .
-docker run -p 7777:7777 -p 3000:3000 agno-teams
-```
-
-### **Servidor**
-```bash
-# Variáveis de ambiente em produção
-export GOOGLE_API_KEY=sua_key
-export HOST=0.0.0.0
-export PORT=7777
-
-# Iniciar sistema
-python run_full.py
-```
-
----
-
-## 📊 **MONITORAMENTO**
-
-- **Logs**: `logs/agno_playground.log`
-- **Database**: `storage/agents.db`
-- **Métricas**: Endpoint `/v1/playground/status`
-- **Health Check**: `curl http://localhost:7777/v1/playground/status`
-
----
-
-## 🛠️ **TROUBLESHOOTING**
-
-### **Problemas Comuns**
-
-#### ❌ "GOOGLE_API_KEY não encontrada"
-```bash
-# Configurar no .env
-echo "GOOGLE_API_KEY=sua_key_aqui" >> .env
-```
-
-#### ❌ "Porta 7777 já em uso"
-```bash
-# Matar processo existente
-pkill -f "python.*7777"
-# ou mudar porta no .env
-echo "PORT=8888" >> .env
-```
-
-#### ❌ "Frontend não conecta ao backend"
+**Frontend não conecta:**
 ```bash
 # Verificar se backend está rodando
 curl http://localhost:7777/v1/playground/status
-# Deve retornar: {"playground":"available"}
+
+# Verificar logs do Streamlit
 ```
 
----
-
-## 📚 **DOCUMENTAÇÃO TÉCNICA**
-
-- **Documentação Completa**: [`docs/CONFLUENCE_DOCUMENTATION.md`](docs/CONFLUENCE_DOCUMENTATION.md)
-- **API REST**: http://localhost:7777/docs (Swagger)
-- **Framework Agno**: https://docs.agno.com/teams/introduction
-- **Repositório**: https://github.com/diegothuran/agent-playground
-
----
-
-## 📄 **LICENÇA**
-
-MIT License - Veja arquivo LICENSE para detalhes.
-
----
-
-## 🎉 **PRONTO PARA USO!**
-
+**Erro de import:**
 ```bash
-# Configurar
-make setup
-
-# Executar sistema completo  
-make full
-
-# Acessar interface
-open http://localhost:3000
+# Verificar PYTHONPATH
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 ```
 
-**🚀 Agno Teams está pronto para resolver suas demandas com inteligência artificial especializada!**
+## 📄 Licença
+
+[LICENSE](LICENSE)
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
+5. Abra um Pull Request
+
+---
+
+**Desenvolvido com ❤️ usando Agno Framework + Streamlit**

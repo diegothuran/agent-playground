@@ -1,0 +1,11 @@
+produto,categoria,preco,vendas_jan,vendas_fev,vendas_mar,estoque,fornecedor
+Notebook Dell,Informática,2500.00,45,52,38,120,Dell Inc
+Mouse Logitech,Informática,89.90,156,142,178,450,Logitech
+Teclado Mecânico,Informática,299.99,78,85,92,230,Corsair
+Monitor 24",Informática,899.00,32,28,35,85,Samsung
+Impressora HP,Informática,449.99,25,31,29,65,HP Inc
+Cadeira Gamer,Móveis,699.00,18,22,15,45,DXRacer
+Mesa de Escritório,Móveis,399.00,12,9,14,28,MadeInDesign
+Luminária LED,Iluminação,89.99,45,38,52,150,Philips
+Cabo HDMI,Acessórios,29.90,89,95,102,300,Multilaser
+Webcam 1080p,Informática,199.99,35,42,48,95,Logitech
