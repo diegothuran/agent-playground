@@ -49,14 +49,14 @@ Lucia Oliveira,38,7500.50,Marketing"""
                 print(f"✅ Conversão alternativa funcionou: {len(csv_output)} caracteres")
             except Exception as e2:
                 print(f"❌ Erro mesmo com conversão alternativa: {e2}")
-                return False
+                assert False, f"Erro mesmo com conversão alternativa: {e2}"
         
         print("🎉 Teste de processamento de CSV passou!")
-        return True
+        assert True
         
     except Exception as e:
         print(f"❌ Erro geral no teste: {e}")
-        return False
+        assert False, f"Erro geral no teste: {e}"
 
 def test_with_complex_data():
     """Testa com dados mais complexos que podem causar problemas"""
@@ -93,11 +93,11 @@ def test_with_complex_data():
             print(f"✅ Conversão alternativa funcionou: {len(csv_output)} caracteres")
         
         print("🎉 Teste com dados complexos passou!")
-        return True
+        assert True
         
     except Exception as e:
         print(f"❌ Erro com dados complexos: {e}")
-        return False
+        assert False, f"Erro com dados complexos: {e}"
 
 def main():
     print("🧠 Teste de Upload de CSV - Frontend Streamlit")
